@@ -85,7 +85,7 @@ GET /mistakes/your_handle
     "tags": "implementation, math",
     "verdict": "WA",
     "passedTestCount": 3,
-    "message": "Excluded the case for n=2(Custom message by user)"
+    "message": ""
   }
 ]
 ```
@@ -101,26 +101,26 @@ POST /mistakes
 **Content-Type: application/json**
 ```json
 {
-  "handle": "your_handle",
-  "problem_name": "Two Sum",
-  "difficulty": "1200",
-  "tags": "implementation, math",
-  "verdict": "WA",
-  "passedTestCount": 3,
-  "message": "Wrong answer on testcase 2"
+    "handle": "your_handle",
+    "problem_name": "Watermelon",
+    "difficulty": "800",
+    "tags": "implementation, math",
+    "verdict": "WA",
+    "passedTestCount": 3,
+    "message": "Did not consider the case n=2"
 }
 ```
 
 **Response**
 ```json
 {
-  "id": 1,
-  "handle": "your_handle",
-  "problem_name": "Two Sum",
-  "difficulty": "1200",
-  "tags": "implementation, math",
-  "verdict": "WA",
-  "passedTestCount": 3,
-  "message": "Wrong answer on testcase 2"
+    "id": 1,
+    "handle": "your_handle",
+    "problem_name": "Watermelon",
+    "difficulty": "800",
+    "tags": "implementation, math",
+    "verdict": "WA",
+    "passedTestCount": 3,
+    "message": "Did not consider the case n=2"
 }
 ```
