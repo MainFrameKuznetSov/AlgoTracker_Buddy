@@ -1,28 +1,24 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import List, Optional
 
-# ---- Mistake Schemas ----
-class MistakeCreate(BaseModel):
+class MistakeBase(BaseModel):
     problem_name: str
-    problem_rating: Optional[float] = None
-    tags: Optional[List[str]] = []
-    verdict: Optional[str] = None
+    difficulty: Optional[int]
+    tags: List[str]
+    verdict: str
+    passedtestcount: int = Field(..., alias="passedTestCount")
+    message: str
+    handle: str
 
-class MistakeOut(MistakeCreate):
-    id: int
+class MistakeCreate(MistakeBase):
+    pass
 
-    class Config:
-        from_attributes = True  # Pydantic v2 equivalent of orm_mode
+class MistakeResponse(MistakeBase):
+    handle: str
+    # If you still want an auto-generated ID (optional)
+    # id: Optional[int] = None
 
-
-# ---- MistakeNote Schemas ----
-class MistakeNoteCreate(BaseModel):
-    mistake_id: int
-    note: str
-    submission_id: Optional[int] = None
-
-class MistakeNoteOut(MistakeNoteCreate):
-    id: int
-
-    class Config:
-        from_attributes = True
+    model_config = {
+        "from_attributes": True,  # works like orm_mode
+        "populate_by_name": True  # allows using alias when serializing
+    }

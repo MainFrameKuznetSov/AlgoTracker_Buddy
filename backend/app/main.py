@@ -28,8 +28,10 @@ def on_shutdown():
 # Routers
 app.include_router(submissions.router, prefix="/submissions", tags=["Submissions"])
 app.include_router(mistakes.router, prefix="/mistakes", tags=["Mistakes"])
+# app.include_router(mistakes.router, prefix="/mistakes", tags=["Mistakes"])
 
 # Root endpoint
 @app.get("/")
 def root():
     return {"message": "Codeforces Tracker API Running"}
+
