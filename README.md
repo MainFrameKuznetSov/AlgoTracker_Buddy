@@ -63,5 +63,27 @@ pip install -r requirements.txt
 # Configure database in .env
 # DATABASE_URL=postgresql://username:password@host:port/dbname
 
-# Run migrations (if using Alembic)
-alembic upgrade head
+## 📡 API Endpoints
+
+### **GET /mistakes/{handle}**
+Fetch all mistakes for a handle.
+
+**Request**
+```http
+GET /mistakes/your_handle
+
+##Response
+
+[
+  {
+    "id": 1,
+    "handle": "your_handle",
+    "problem_name": "Watermelon",
+    "difficulty": "800",
+    "tags": "implementation, math",
+    "verdict": "WA",
+    "passedTestCount": 3,
+    "message": "Excluded the case for n=2" #Custom message by user
+  }
+]
+
