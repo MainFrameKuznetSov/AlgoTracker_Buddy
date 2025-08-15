@@ -1,7 +1,7 @@
 # 🎯 AlgoTracker Buddy
 
 ![Python](https://img.shields.io/badge/Python-3.11-blue)
-![FastAPI](https://img.shields.io/badge/FastAPI-0.100.0-green)
+![FastAPI](https://img.shields.io/badge/FastAPI-0.111.0-green)
 ![PostgreSQL](https://img.shields.io/badge/NeonDB%2FPostgreSQL-13.0-blue)
 
 **AlgoTracker Buddy** is your personal Codeforces submission tracker. It identifies mistakes (non-AC submissions), stores them in a database, and provides APIs to analyze and improve your competitive programming performance.
