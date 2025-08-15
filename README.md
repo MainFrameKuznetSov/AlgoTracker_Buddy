@@ -136,3 +136,11 @@ uvicorn main:app --reload
 Swagger UI: http://127.0.0.1:8000/docs
 ReDoc: http://127.0.0.1:8000/redoc
 ```
+
+## 🌟 Upcoming Improvements
+
+- Analytics dashboard for mistake trends
+- Frontend interface for visual tracking
+- Periodic automatic fetching of submissions
+- Advanced filtering and search by tags or difficulty
+- TODO list based on average rating of solved problems
