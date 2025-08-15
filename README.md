@@ -74,7 +74,7 @@ Fetch all mistakes for a handle.
 GET /mistakes/your_handle
 ```
 
-## Response
+**Response**
 ```json
 [
   {
@@ -98,7 +98,7 @@ Add a new mistake.
 POST /mistakes
 ```
 
-## Content-Type: application/json
+**Content-Type: application/json**
 ```json
 {
   "handle": "your_handle",
@@ -111,7 +111,7 @@ POST /mistakes
 }
 ```
 
-## Response
+**Response**
 ```json
 {
   "id": 1,
