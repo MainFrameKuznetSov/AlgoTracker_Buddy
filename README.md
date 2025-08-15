@@ -62,6 +62,7 @@ pip install -r requirements.txt
 
 # Configure database in .env
 # DATABASE_URL=postgresql://username:password@host:port/dbname
+```
 
 ## 📡 API Endpoints
 
@@ -71,9 +72,10 @@ Fetch all mistakes for a handle.
 **Request**
 ```http
 GET /mistakes/your_handle
+```
 
-##Response
-
+## Response
+```json
 [
   {
     "id": 1,
@@ -83,7 +85,42 @@ GET /mistakes/your_handle
     "tags": "implementation, math",
     "verdict": "WA",
     "passedTestCount": 3,
-    "message": "Excluded the case for n=2" #Custom message by user
+    "message": "Excluded the case for n=2(Custom message by user)"
   }
 ]
+```
 
+### **POST /mistakes**
+Add a new mistake.
+
+**Request**
+```http
+POST /mistakes
+```
+
+## Content-Type: application/json
+```json
+{
+  "handle": "your_handle",
+  "problem_name": "Two Sum",
+  "difficulty": "1200",
+  "tags": "implementation, math",
+  "verdict": "WA",
+  "passedTestCount": 3,
+  "message": "Wrong answer on testcase 2"
+}
+```
+
+## Response
+```json
+{
+  "id": 1,
+  "handle": "your_handle",
+  "problem_name": "Two Sum",
+  "difficulty": "1200",
+  "tags": "implementation, math",
+  "verdict": "WA",
+  "passedTestCount": 3,
+  "message": "Wrong answer on testcase 2"
+}
+```
