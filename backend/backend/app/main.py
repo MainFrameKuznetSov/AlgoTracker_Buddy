@@ -1,16 +1,10 @@
 from fastapi import FastAPI
 from app.api import submissions, mistakes
 from app.core.db import Base, engine
-from sqlalchemy.exc import OperationalError
 
-# Initialize DB tables safely
+# Initialize DB tables
 def init_db():
-    try:
-        # Create tables if they don't exist
-        Base.metadata.create_all(bind=engine)
-        print("✅ Database initialized successfully.")
-    except OperationalError as e:
-        print("❌ Database initialization failed:", e)
+    Base.metadata.create_all(bind=engine)
 
 # Create FastAPI app instance
 app = FastAPI(title="AlgoTracker Buddy")
