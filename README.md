@@ -186,7 +186,7 @@ GET /mistakes/problem/Watermelon
 
 Fetch all mistakes filtered by a specific verdict.
 
-### Supported verdicts (via VerdictEnum):
+### Supported verdicts qualifying as mistake:
 
 - WRONG_ANSWER
 - TIME_LIMIT_EXCEEDED
