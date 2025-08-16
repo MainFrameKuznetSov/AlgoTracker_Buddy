@@ -60,3 +60,9 @@ def post_mistake(mistake: MistakeCreate, db: Session = Depends(get_db)):
 def get_mistakes_by_handle(handle: str, db: Session = Depends(get_db)):
     mistakes = crud.get_mistakes_by_handle(db, handle)
     return mistakes
+
+# ✅ Fetch mistakes by problem name
+@router.get("/mistakes/problem/{problem_name}", response_model=list[MistakeBase])
+def get_mistakes_by_problem_name(problem_name: str, db: Session = Depends(get_db)):
+    mistakes = db.query(Mistake).filter(Mistake.problem_name == problem_name).all()
+    return mistakes
