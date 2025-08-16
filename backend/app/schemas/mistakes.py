@@ -6,7 +6,7 @@ class MistakeBase(BaseModel):
     difficulty: Optional[int]
     tags: List[str]
     verdict: str
-    passedtestcount: int = Field(..., alias="passedTestCount")
+    passedtestcount: int
     message: str
     handle: str
 
@@ -22,3 +22,6 @@ class MistakeResponse(MistakeBase):
         "from_attributes": True,  # works like orm_mode
         "populate_by_name": True  # allows using alias when serializing
     }
+
+class MistakeList(BaseModel):
+    mistakes: List[MistakeBase]

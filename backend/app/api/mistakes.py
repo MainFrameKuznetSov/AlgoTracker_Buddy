@@ -1,13 +1,16 @@
 from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy.orm import Session
 from app.services.codeforces import fetch_last_submissions
-from app.schemas.mistakes import MistakeCreate, MistakeResponse
+from app.schemas.mistakes import MistakeBase, MistakeCreate, MistakeResponse
 from app.models.mistake import Mistake # your SQLAlchemy model
 from app.database import get_db
+from .. import crud
+from ..crud import mistakes as crud
+from .. import schemas
 
 router = APIRouter()
 
-@router.get("/mistakes/{handle}")
+@router.get("/mistakes/live/{handle}")
 def get_mistakes(handle: str):
     
     try:
@@ -53,3 +56,7 @@ def post_mistake(mistake: MistakeCreate, db: Session = Depends(get_db)):
     except Exception as e:
         raise HTTPException(status_code=500,details=str(e))
     
+@router.get("/mistakes/{handle}", response_model=list[MistakeBase])
+def get_mistakes_by_handle(handle: str, db: Session = Depends(get_db)):
+    mistakes = crud.get_mistakes_by_handle(db, handle)
+    return mistakes
