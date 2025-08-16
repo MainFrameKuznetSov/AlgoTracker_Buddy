@@ -16,7 +16,7 @@ def clean_floats(obj):
 
 @router.get("/{handle}")
 def get_submissions(handle: str):
-    url = f"https://codeforces.com/api/user.status?handle={handle}&from=1&count=10"
+    url = f"https://codeforces.com/api/user.status?handle={handle}&from=1&count=100"
     resp = requests.get(url)
     data = resp.json()
 
