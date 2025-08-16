@@ -66,12 +66,12 @@ pip install -r requirements.txt
 
 ## 📡 API Endpoints
 
-### **GET /mistakes/{handle}**
+### **GET /mistakes/live/{handle}**
 Fetch all mistakes for a handle.
 
 **Request**
 ```http
-GET /mistakes/your_handle
+GET /mistakes/live/your_handle
 ```
 
 **Response**
@@ -124,6 +124,30 @@ POST /mistakes
     "message": "Did not consider the case n=2"
 }
 ```
+
+### GET mistake/{handle}
+Get all the stored mistakes(message added) i.e. posted via POST/mistakes
+
+**Request**
+```http
+GET /mistakes
+```
+
+**Response**
+```json
+{
+    "problem_name": "string",
+    "difficulty": 1000,
+    "tags": [
+      "string"
+    ],
+    "verdict": "string",
+    "passedtestcount": 0,
+    "message": "string",
+    "handle": "dudubhai"
+}
+```
+
 
 ## 🏃 Running Locally
 ```
