@@ -1,3 +1,4 @@
+from enum import Enum
 from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy.orm import Session
 from app.services.codeforces import fetch_last_submissions
@@ -65,4 +66,24 @@ def get_mistakes_by_handle(handle: str, db: Session = Depends(get_db)):
 @router.get("/mistakes/problem/{problem_name}", response_model=list[MistakeBase])
 def get_mistakes_by_problem_name(problem_name: str, db: Session = Depends(get_db)):
     mistakes = db.query(Mistake).filter(Mistake.problem_name == problem_name).all()
+    return mistakes
+
+# ✅ Fetch mistakes by problem name
+@router.get("/mistakes/problem/{problem_name}", response_model=list[MistakeBase])
+def get_mistakes_by_problem_name(problem_name: str, db: Session = Depends(get_db)):
+    mistakes = db.query(Mistake).filter(Mistake.problem_name == problem_name).all()
+    return mistakes
+
+# ✅ Enum for verdict options
+class VerdictEnum(str, Enum):
+    WRONG_ANSWER = "WRONG_ANSWER"
+    TIME_LIMIT_EXCEEDED = "TIME_LIMIT_EXCEEDED"
+    IDLENESS_LIMIT_EXCEEDED = "IDLENESS_LIMIT_EXCEEDED"
+    COMPILATION_ERROR = "COMPILATION_ERROR"
+    MEMORY_LIMIT_EXCEEDED = "MEMORY_LIMIT_EXCEEDED"
+
+
+@router.get("/mistakes/verdict/{verdict}", response_model=list[MistakeBase])
+def get_mistakes_by_verdict(verdict: VerdictEnum, db: Session = Depends(get_db)):
+    mistakes = db.query(Mistake).filter(Mistake.verdict == verdict.value).all()
     return mistakes
