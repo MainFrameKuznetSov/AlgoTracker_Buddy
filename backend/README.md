@@ -1,4 +1,3 @@
-s
 ## 📡 API Endpoints
 
 ### **GET /mistakes/live/{handle}**
