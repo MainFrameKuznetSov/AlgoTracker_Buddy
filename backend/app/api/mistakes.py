@@ -1,6 +1,8 @@
+from typing import Optional
 from enum import Enum
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, Depends, Query
 from sqlalchemy.orm import Session
+from sqlalchemy import func
 from app.services.codeforces import fetch_last_submissions
 from app.schemas.mistakes import MistakeBase, MistakeCreate, MistakeResponse
 from app.models.mistake import Mistake # your SQLAlchemy model
