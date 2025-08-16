@@ -144,7 +144,7 @@ GET /mistakes
     "verdict": "string",
     "passedtestcount": 0,
     "message": "string",
-    "handle": "dudubhai"
+    "handle": "string"
 }
 ```
 
