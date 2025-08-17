@@ -40,24 +40,42 @@ def get_mistakes(handle: str):
 
 @router.post("/mistakes", response_model=MistakeResponse)
 def post_mistake(mistake: MistakeCreate, db: Session = Depends(get_db)):
-
     try:
-        db_mistake = Mistake(
-            problem_name=mistake.problem_name,
-            difficulty=mistake.difficulty or 0,
-            tags=mistake.tags,           # Python list, SQLAlchemy JSON handles it
-            verdict=mistake.verdict,
-            passedtestcount=mistake.passedtestcount,
-            message=mistake.message,
-            handle=mistake.handle        # taken from user input
+        # Check if the mistake already exists (based on unique fields)
+        existing = (
+            db.query(Mistake)
+            .filter(
+                Mistake.handle == mistake.handle,
+                Mistake.problem_name == mistake.problem_name,
+                Mistake.verdict == mistake.verdict,
+            )
+            .first()
         )
-        db.add(db_mistake)
-        db.commit()
-        db.refresh(db_mistake)
-        return db_mistake
-    
+
+        if existing:
+            # Update only the message if it exists
+            existing.message = mistake.message
+            db.commit()
+            db.refresh(existing)
+            return existing
+        else:
+            # Insert a new mistake if it doesn't exist
+            db_mistake = Mistake(
+                problem_name=mistake.problem_name,
+                difficulty=mistake.difficulty or 0,
+                tags=mistake.tags,
+                verdict=mistake.verdict,
+                passedtestcount=mistake.passedtestcount,
+                message=mistake.message,
+                handle=mistake.handle,
+            )
+            db.add(db_mistake)
+            db.commit()
+            db.refresh(db_mistake)
+            return db_mistake
+
     except Exception as e:
-        raise HTTPException(status_code=500,details=str(e))
+        raise HTTPException(status_code=500, detail=str(e))
     
 @router.get("/mistakes/{handle}", response_model=list[MistakeBase])
 def get_mistakes_by_handle(handle: str, db: Session = Depends(get_db)):
@@ -88,4 +106,35 @@ class VerdictEnum(str, Enum):
 @router.get("/mistakes/verdict/{verdict}", response_model=list[MistakeBase])
 def get_mistakes_by_verdict(verdict: VerdictEnum, db: Session = Depends(get_db)):
     mistakes = db.query(Mistake).filter(Mistake.verdict == verdict.value).all()
+    return mistakes
+
+# ✅ Filter by verdict + handle
+@router.get("/mistakes/{handle}/verdict/{verdict}", response_model=list[MistakeBase])
+def get_mistakes_by_handle_and_verdict(
+    handle: str,
+    verdict: VerdictEnum,
+    db: Session = Depends(get_db)
+):
+    mistakes = (
+        db.query(Mistake)
+        .filter(Mistake.handle == handle, Mistake.verdict == verdict.value)
+        .all()
+    )
+    return mistakes
+
+# ✅ Filter by problem_name + handle
+@router.get("/mistakes/{handle}/problem/{problem_name}", response_model=list[MistakeBase])
+def get_mistakes_by_handle_and_problem(
+    handle: str,
+    problem_name: str,
+    db: Session = Depends(get_db)
+):
+    mistakes = (
+        db.query(Mistake)
+        .filter(
+            Mistake.handle.ilike(handle), 
+            Mistake.problem_name.ilike(f"%{problem_name}%")
+        )
+        .all()
+    )
     return mistakes
