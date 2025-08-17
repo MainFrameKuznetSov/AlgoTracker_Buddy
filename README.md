@@ -317,6 +317,64 @@ GET /mistakes/your_handle/problem/problem_name
 ]
 ```
 
+## GET /mistakes/{handle}/problem/{problem_name}
+
+Get mistakes of a particular problem from the submissions of a given handle
+
+**Request**
+```http
+GET /mistakes/your_handle/problem/problem_name
+```
+
+**Response**
+```json
+[
+  {
+    "id": 10,
+    "handle": "your_handle",
+    "problem_name": "Array Division",
+    "difficulty": "1400",
+    "tags": "greedy",
+    "verdict": "WRONG_ANSWER",
+    "passedTestCount": 2,
+    "message": "Wrong condition for testcase 4"
+  }
+]
+```
+
+## GET /mistakes/live/{handle}/rating
+
+Get mistakes for a particular handle within a difficulty rating range [A, B]. 
+
+**Request**
+```http
+GET /mistakes/live/{handle}/rating
+```
+
+**Response**
+```json
+[
+  {
+    "problem_name": "Two Sum",
+    "difficulty": 800,
+    "tags": ["implementation", "math"],
+    "verdict": "WRONG_ANSWER",
+    "passedTestCount": 3,
+    "message": "Blank",
+    "handle": "RealSpineFreezer_1410"
+  },
+  {
+    "problem_name": "Graph Paths",
+    "difficulty": 1400,
+    "tags": ["graphs", "dp"],
+    "verdict": "TIME_LIMIT_EXCEEDED",
+    "passedTestCount": 7,
+    "message": "Blank",
+    "handle": "RealSpineFreezer_1410"
+  }
+]
+```
+
 ## 🏃 Running Locally
 ```
 uvicorn main:app --reload

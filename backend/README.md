@@ -250,3 +250,36 @@ GET /mistakes/your_handle/problem/problem_name
   }
 ]
 ```
+
+## GET /mistakes/live/{handle}/rating
+
+Get mistakes for a particular handle within a difficulty rating range [A, B]. 
+
+**Request**
+```http
+GET /mistakes/live/{handle}/rating
+```
+
+**Response**
+```json
+[
+  {
+    "problem_name": "Two Sum",
+    "difficulty": 800,
+    "tags": ["implementation", "math"],
+    "verdict": "WRONG_ANSWER",
+    "passedTestCount": 3,
+    "message": "Blank",
+    "handle": "RealSpineFreezer_1410"
+  },
+  {
+    "problem_name": "Graph Paths",
+    "difficulty": 1400,
+    "tags": ["graphs", "dp"],
+    "verdict": "TIME_LIMIT_EXCEEDED",
+    "passedTestCount": 7,
+    "message": "Blank",
+    "handle": "RealSpineFreezer_1410"
+  }
+]
+```

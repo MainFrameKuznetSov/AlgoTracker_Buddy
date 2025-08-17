@@ -139,7 +139,7 @@ def get_mistakes_by_handle_and_problem(
     )
     return mistakes
 
-@router.get("/mistakes/live/{handle}/difficulty-range")
+@router.get("/mistakes/live/{handle}/rating")
 def get_mistakes_in_range(handle: str, A: int, B: int):
     """
     Fetch mistakes for a given handle from Codeforces API
