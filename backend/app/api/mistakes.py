@@ -138,3 +138,36 @@ def get_mistakes_by_handle_and_problem(
         .all()
     )
     return mistakes
+
+@router.get("/mistakes/live/{handle}/difficulty-range")
+def get_mistakes_in_range(handle: str, A: int, B: int):
+    """
+    Fetch mistakes for a given handle from Codeforces API
+    but only return those within difficulty range [A, B].
+    """
+    try:
+        data = fetch_last_submissions(handle, count=100)
+        submissions = data["result"]
+
+        mistakes = []
+        for sub in submissions:
+            if sub.get("verdict") != "OK":  # Only mistakes
+                problem = sub.get("problem", {})
+                difficulty = problem.get("rating")
+
+                # Only consider if difficulty is defined and within range
+                if difficulty is not None and A <= difficulty <= B:
+                    mistakes.append({
+                        "problem_name": problem.get("name"),
+                        "difficulty": difficulty,
+                        "tags": problem.get("tags", []),
+                        "verdict": sub.get("verdict"),
+                        "passedTestCount": sub.get("passedTestCount"),
+                        "message": "Blank",
+                        "handle": handle
+                    })
+
+        return mistakes
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
