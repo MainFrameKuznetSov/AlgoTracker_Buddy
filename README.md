@@ -267,6 +267,56 @@ GET /mistakes/verdict/WRONG_ANSWER
 ]
 ```
 
+## GET /mistakes/{handle}/verdict/{verdict}
+
+Fetch all mistakes of a particular handle based on a particular verdict type
+
+**Request**
+```http
+GET /mistakes/your_handle/verdict/WRONG_ANSWER
+```
+
+**Response**
+```json
+[
+  {
+    "id": 10,
+    "handle": "your_handle",
+    "problem_name": "Array Division",
+    "difficulty": "1400",
+    "tags": "greedy",
+    "verdict": "WRONG_ANSWER",
+    "passedTestCount": 2,
+    "message": "Wrong condition for testcase 4"
+  }
+]
+```
+
+## GET /mistakes/{handle}/problem/{problem_name}
+
+Get mistakes of a particular problem from the submissions of a given handle
+
+**Request**
+```http
+GET /mistakes/your_handle/problem/problem_name
+```
+
+**Response**
+```json
+[
+  {
+    "id": 10,
+    "handle": "your_handle",
+    "problem_name": "Array Division",
+    "difficulty": "1400",
+    "tags": "greedy",
+    "verdict": "WRONG_ANSWER",
+    "passedTestCount": 2,
+    "message": "Wrong condition for testcase 4"
+  }
+]
+```
+
 ## 🏃 Running Locally
 ```
 uvicorn main:app --reload
