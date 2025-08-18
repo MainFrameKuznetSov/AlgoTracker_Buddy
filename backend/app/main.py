@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from app.api import submissions, mistakes
 from app.core.db import Base, engine
 from sqlalchemy.exc import OperationalError
+from fastapi.middleware.cors import CORSMiddleware
 
 # Initialize DB tables safely
 def init_db():
@@ -14,6 +15,19 @@ def init_db():
 
 # Create FastAPI app instance
 app = FastAPI(title="AlgoTracker Buddy")
+
+origins = [
+    "http://localhost:3000",  # your frontend
+    # "https://yourfrontend.com"  # production domain (later)
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,          # allow only frontend
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Events
 @app.on_event("startup")
