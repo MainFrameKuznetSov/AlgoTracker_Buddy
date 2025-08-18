@@ -30,7 +30,8 @@ def get_mistakes(handle: str):
                     "tags": problem.get("tags", []),
                     "verdict": sub.get("verdict"),
                     "passedTestCount": sub.get("passedTestCount"),
-                    "message": "Blank"
+                    "message": "Blank",
+                    "handle":handle
                 })
 
         return mistakes
