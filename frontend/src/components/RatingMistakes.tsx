@@ -18,7 +18,6 @@ interface RatingMistake {
   verdict: string;
   tags: string[];
   passedTestCount: number;
-  totalTestCount: number;
   timestamp: string;
 }
 
@@ -76,8 +75,7 @@ const RatingMistakes = () => {
       difficulty: item.difficulty,
       verdict: item.verdict,
       tags: item.tags || [],
-      passedTestCount: item.passedtestcount,
-      totalTestCount: item.totaltestcount,
+      passedTestCount: item.passedTestCount,
       timestamp: item.timestamp || new Date().toISOString(),
     }));
 
@@ -100,21 +98,22 @@ const RatingMistakes = () => {
 
 
   const getVerdictColor = (verdict: string) => {
-    switch (verdict) {
-      case 'WRONG_ANSWER':
-        return 'destructive';
-      case 'TIME_LIMIT_EXCEEDED':
-        return 'destructive';
-      case 'MEMORY_LIMIT_EXCEEDED':
-        return 'destructive';
-      case 'RUNTIME_ERROR':
-        return 'destructive';
-      case 'COMPILATION_ERROR':
-        return 'destructive';
-      default:
-        return 'secondary';
-    }
-  };
+  switch (verdict) {
+    case 'WRONG_ANSWER':
+      return 'bg-red-500 text-white dark:bg-red-600';
+    case 'TIME_LIMIT_EXCEEDED':
+      return 'bg-blue-500 text-white dark:bg-blue-600';
+    case 'COMPILATION_ERROR':
+      return 'bg-yellow-400 text-black dark:bg-yellow-500';
+    case 'IDLENESS_LIMIT_EXCEEDED':
+      return 'bg-gray-500 text-white dark:bg-gray-600';
+    case 'ACCEPTED':
+      return 'bg-green-500 text-white dark:bg-green-600';
+    default:
+      return 'bg-slate-500 text-white dark:bg-slate-600';
+  }
+};
+
 
   const getDifficultyColor = (rating: number) => {
     if (rating < 1000) return 'bg-gray-500';
@@ -189,7 +188,7 @@ const RatingMistakes = () => {
           </CardHeader>
           <CardContent>
             <div className="overflow-x-auto">
-              <Table>
+              <Table className="w-full">
                 <TableHeader>
                   <TableRow>
                     <TableHead>Problem</TableHead>
@@ -197,14 +196,14 @@ const RatingMistakes = () => {
                     <TableHead>Tags</TableHead>
                     <TableHead>Verdict</TableHead>
                     <TableHead>Tests</TableHead>
-                    <TableHead>Date</TableHead>
+                    {/* <TableHead>Date</TableHead> */}
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {mistakes.map((mistake) => (
                     <TableRow key={mistake.id}>
                       <TableCell className="font-medium">
-                        {mistake.problemIndex}. {mistake.problemName}
+                        {mistake.problemName}
                       </TableCell>
                       <TableCell>
                         <div className="flex items-center space-x-2">
@@ -217,31 +216,29 @@ const RatingMistakes = () => {
                       </TableCell>
                       <TableCell>
                         <div className="flex flex-wrap gap-1">
-                          {mistake.tags.slice(0, 3).map((tag, index) => (
+                          {mistake.tags.map((tag, index) => (
                             <Badge key={index} variant="secondary" className="text-xs">
                               {tag}
                             </Badge>
                           ))}
-                          {mistake.tags.length > 3 && (
-                            <Badge variant="secondary" className="text-xs">
-                              +{mistake.tags.length - 3}
-                            </Badge>
-                          )}
                         </div>
                       </TableCell>
                       <TableCell>
-                        <Badge variant={getVerdictColor(mistake.verdict)}>
+                        <Badge 
+                            variant="secondary" 
+                            className={getVerdictColor(mistake.verdict)}
+                        >
                           {mistake.verdict.replace(/_/g, ' ')}
                         </Badge>
                       </TableCell>
                       <TableCell>
-                        {mistake.passedTestCount}/{mistake.totalTestCount}
+                        {mistake.passedTestCount}
                       </TableCell>
-                      <TableCell>
+                      {/* <TableCell>
                         <span className="text-sm text-muted-foreground">
                           {new Date(mistake.timestamp).toLocaleDateString()}
                         </span>
-                      </TableCell>
+                      </TableCell> */}
                     </TableRow>
                   ))}
                 </TableBody>

@@ -16,10 +16,7 @@ def init_db():
 # Create FastAPI app instance
 app = FastAPI(title="AlgoTracker Buddy")
 
-origins = [
-    "http://localhost:3000",  # your frontend
-    # "https://yourfrontend.com"  # production domain (later)
-]
+origins = ["*"]
 
 app.add_middleware(
     CORSMiddleware,
