@@ -1,5 +1,4 @@
 **Files requiring major changes**
-- FilteredMistakes.tsx
 - MistakesByProblem.tsx
 - MistakesByVerdict.tsx
 
@@ -7,4 +6,7 @@
 - AddMessageModal.tsx
 - LiveMistakes.tsx
 - RatingMistakes.tsx
-- SavedMistakes.tsx
+
+**Fixed Files**
+- Saved Mistakes.tsx
+- FilteredMistakes.tsx
