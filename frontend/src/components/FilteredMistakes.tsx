@@ -1,6 +1,4 @@
 import React, { useState } from 'react';
-import axios from 'axios';
-import { API_BASE_URL } from '@/lib/api';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -15,13 +13,10 @@ interface FilteredMistake {
   id: number;
   handle: string;
   problemName: string;
-  problemIndex: string;
-  difficulty?: number;
+  difficulty: number;
   verdict: string;
   customMessage: string;
-  timestamp: string;
   passedTestCount: number;
-  totalTestCount?: number;
 }
 
 const verdictOptions = [
@@ -71,33 +66,41 @@ const FilteredMistakes = () => {
 
     setIsLoading(true);
     try {
-      let response;
-      if (filterType === 'verdict') {
-        response = await axios.get(`${API_BASE_URL}/mistakes/${handle}/verdict/${selectedVerdict}`);
-      } else {
-        response = await axios.get(`${API_BASE_URL}/mistakes/${handle}/problem/${encodeURIComponent(problemName)}`);
-      }
-      const data = response.data.map((item: any, idx: number) => ({
-        id: item.id || idx,
-        handle: item.handle,
-        problemName: item.problem_name,
-        problemIndex: item.problem_index || '-',
-        difficulty: item.difficulty,
-        verdict: item.verdict,
-        customMessage: item.message,
-        timestamp: item.timestamp || new Date().toISOString(),
-        passedTestCount: item.passedtestcount,
-        totalTestCount: item.totaltestcount,
-      }));
-      setMistakes(data);
+      // In a real app, this would call your backend API:
+      // GET /mistakes/mistakes/{handle}/verdict/{verdict} or
+      // GET /mistakes/mistakes/{handle}/problem/{problem_name}
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      const sampleMistakes: FilteredMistake[] = [
+        {
+          id: 1,
+          handle: handle,
+          problemName: filterType === 'problem' ? problemName : "Dynamic Programming",
+          difficulty: 1400,
+          verdict: filterType === 'verdict' ? selectedVerdict : "WRONG_ANSWER",
+          customMessage: "Need to practice more DP state transitions. Made error in recurrence relation.",
+          passedTestCount: 8,
+        },
+        {
+          id: 2,
+          handle: handle,
+          problemName: filterType === 'problem' ? problemName : "Graph Theory",
+          difficulty: 1600,
+          verdict: filterType === 'verdict' ? selectedVerdict : "TIME_LIMIT_EXCEEDED",
+          customMessage: "Used DFS instead of BFS. Algorithm choice was suboptimal for this problem type.",
+          passedTestCount: 12,
+        },
+      ];
+      
+      setMistakes(sampleMistakes);
       toast({
         title: "Success",
-        description: `Found ${data.length} filtered mistakes for ${handle}`,
+        description: `Found ${sampleMistakes.length} filtered mistakes for ${handle}`,
       });
-    } catch (error: any) {
+    } catch (error) {
       toast({
         title: "Error",
-        description: error?.response?.data?.detail || "Failed to fetch filtered mistakes. Please try again.",
+        description: "Failed to fetch filtered mistakes. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -105,20 +108,21 @@ const FilteredMistakes = () => {
     }
   };
 
-  const getVerdictColor = (verdict: string) => {
-    switch (verdict) {
+    const getVerdictColor = (verdict: string) => {
+    switch (verdict) 
+    {
       case 'WRONG_ANSWER':
-        return 'destructive';
+        return 'bg-red-500 text-white dark:bg-red-600';
       case 'TIME_LIMIT_EXCEEDED':
-        return 'destructive';
-      case 'MEMORY_LIMIT_EXCEEDED':
-        return 'destructive';
-      case 'RUNTIME_ERROR':
-        return 'destructive';
+        return 'bg-blue-500 text-white dark:bg-blue-600';
       case 'COMPILATION_ERROR':
-        return 'destructive';
+        return 'bg-yellow-400 text-black dark:bg-yellow-500';
+      case 'IDLENESS_LIMIT_EXCEEDED':
+        return 'bg-gray-500 text-white dark:bg-gray-600';
+      case 'ACCEPTED':
+        return 'bg-green-500 text-white dark:bg-green-600';
       default:
-        return 'secondary';
+        return 'bg-slate-500 text-white dark:bg-slate-600';
     }
   };
 
@@ -210,16 +214,15 @@ const FilteredMistakes = () => {
                     <TableHead>Problem</TableHead>
                     <TableHead>Difficulty</TableHead>
                     <TableHead>Verdict</TableHead>
-                    <TableHead>Tests</TableHead>
+                    <TableHead>Passed Tests</TableHead>
                     <TableHead>Notes</TableHead>
-                    <TableHead>Date</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {mistakes.map((mistake) => (
                     <TableRow key={mistake.id}>
                       <TableCell className="font-medium">
-                        {mistake.problemIndex}. {mistake.problemName}
+                        {mistake.problemName}
                       </TableCell>
                       <TableCell>
                         {mistake.difficulty ? (
@@ -229,22 +232,20 @@ const FilteredMistakes = () => {
                         )}
                       </TableCell>
                       <TableCell>
-                        <Badge variant={getVerdictColor(mistake.verdict)}>
+                        <Badge 
+                            variant="secondary" 
+                            className={getVerdictColor(mistake.verdict)}
+                          >
                           {mistake.verdict.replace(/_/g, ' ')}
                         </Badge>
                       </TableCell>
                       <TableCell>
-                        {mistake.passedTestCount}/{mistake.totalTestCount || '?'}
+                        {mistake.passedTestCount}
                       </TableCell>
                       <TableCell className="max-w-xs">
                         <div className="text-sm text-muted-foreground truncate" title={mistake.customMessage}>
                           {mistake.customMessage}
                         </div>
-                      </TableCell>
-                      <TableCell>
-                        <span className="text-sm text-muted-foreground">
-                          {new Date(mistake.timestamp).toLocaleDateString()}
-                        </span>
                       </TableCell>
                     </TableRow>
                   ))}

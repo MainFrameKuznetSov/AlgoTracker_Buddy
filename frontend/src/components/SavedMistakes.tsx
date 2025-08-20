@@ -13,13 +13,10 @@ import { BookOpen, Search } from 'lucide-react';
 interface SavedMistake {
   id: number;
   problemName: string;
-  problemIndex: string;
-  difficulty?: number;
+  difficulty: number;
   verdict: string;
   customMessage: string;
-  timestamp: string;
   passedTestCount: number;
-  totalTestCount?: number;
 }
 
 const SavedMistakes = () => {
@@ -45,13 +42,10 @@ const SavedMistakes = () => {
       const data = response.data.map((item: any, idx: number) => ({
         id: item.id || idx,
         problemName: item.problem_name,
-        problemIndex: item.problem_index || '-',
         difficulty: item.difficulty,
         verdict: item.verdict,
         customMessage: item.message,
-        timestamp: item.timestamp || new Date().toISOString(),
         passedTestCount: item.passedtestcount,
-        totalTestCount: item.totaltestcount,
       }));
       setMistakes(data);
       toast({
@@ -69,20 +63,21 @@ const SavedMistakes = () => {
     }
   };
 
-  const getVerdictColor = (verdict: string) => {
-    switch (verdict) {
+    const getVerdictColor = (verdict: string) => {
+    switch (verdict) 
+    {
       case 'WRONG_ANSWER':
-        return 'destructive';
+        return 'bg-red-500 text-white dark:bg-red-600';
       case 'TIME_LIMIT_EXCEEDED':
-        return 'destructive';
-      case 'MEMORY_LIMIT_EXCEEDED':
-        return 'destructive';
-      case 'RUNTIME_ERROR':
-        return 'destructive';
+        return 'bg-blue-500 text-white dark:bg-blue-600';
       case 'COMPILATION_ERROR':
-        return 'destructive';
+        return 'bg-yellow-400 text-black dark:bg-yellow-500';
+      case 'IDLENESS_LIMIT_EXCEEDED':
+        return 'bg-gray-500 text-white dark:bg-gray-600';
+      case 'ACCEPTED':
+        return 'bg-green-500 text-white dark:bg-green-600';
       default:
-        return 'secondary';
+        return 'bg-slate-500 text-white dark:bg-slate-600';
     }
   };
 
@@ -134,16 +129,15 @@ const SavedMistakes = () => {
                     <TableHead>Problem</TableHead>
                     <TableHead>Difficulty</TableHead>
                     <TableHead>Verdict</TableHead>
-                    <TableHead>Tests</TableHead>
+                    <TableHead>Passed Tests</TableHead>
                     <TableHead>Your Notes</TableHead>
-                    <TableHead>Date</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {mistakes.map((mistake) => (
                     <TableRow key={mistake.id}>
                       <TableCell className="font-medium">
-                        {mistake.problemIndex}. {mistake.problemName}
+                        {mistake.problemName}
                       </TableCell>
                       <TableCell>
                         {mistake.difficulty ? (
@@ -153,22 +147,20 @@ const SavedMistakes = () => {
                         )}
                       </TableCell>
                       <TableCell>
-                        <Badge variant={getVerdictColor(mistake.verdict)}>
+                        <Badge 
+                          variant="secondary" 
+                          className={getVerdictColor(mistake.verdict)}
+                          >
                           {mistake.verdict.replace(/_/g, ' ')}
                         </Badge>
                       </TableCell>
                       <TableCell>
-                        {mistake.passedTestCount}/{mistake.totalTestCount || '?'}
+                        {mistake.passedTestCount}
                       </TableCell>
                       <TableCell className="max-w-xs">
                         <div className="text-sm text-muted-foreground truncate" title={mistake.customMessage}>
                           {mistake.customMessage}
                         </div>
-                      </TableCell>
-                      <TableCell>
-                        <span className="text-sm text-muted-foreground">
-                          {new Date(mistake.timestamp).toLocaleDateString()}
-                        </span>
                       </TableCell>
                     </TableRow>
                   ))}
