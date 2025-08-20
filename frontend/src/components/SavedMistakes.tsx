@@ -81,6 +81,27 @@ const SavedMistakes = () => {
     }
   };
 
+    const getDifficultyColour = (difficulty: number) => {
+    if (difficulty < 1200)
+      return "bg-gray-500 text-white dark:bg-gray-600"; // grey
+    if (difficulty >= 1200 && difficulty < 1400)
+      return "bg-green-500 text-white dark:bg-green-600"; // green
+    if (difficulty >= 1400 && difficulty < 1600)
+      return "bg-cyan-500 text-white dark:bg-cyan-600"; // cyan
+    if (difficulty >= 1600 && difficulty < 1900)
+      return "bg-blue-800 text-white dark:bg-blue-900"; // deep blue
+    if (difficulty >= 1900 && difficulty < 2200)
+      return "bg-fuchsia-500 text-white dark:bg-fuchsia-600"; // magenta
+    if (difficulty >= 2200 && difficulty < 2300)
+      return "bg-yellow-200 text-black dark:bg-yellow-300"; // light yellow
+    if (difficulty >= 2300 && difficulty < 2400)
+      return "bg-yellow-600 text-black dark:bg-yellow-700"; // deep yellow
+    if (difficulty >= 2400)
+      return "bg-red-600 text-white dark:bg-red-700"; // red
+    return "bg-slate-500 text-white dark:bg-slate-600"; // fallback
+  };
+
+  
   return (
     <div className="space-y-6">
       <Card>
@@ -140,11 +161,12 @@ const SavedMistakes = () => {
                         {mistake.problemName}
                       </TableCell>
                       <TableCell>
-                        {mistake.difficulty ? (
-                          <Badge variant="outline">{mistake.difficulty}</Badge>
-                        ) : (
-                          <span className="text-muted-foreground">-</span>
-                        )}
+                        <Badge
+                          variant="secondary"
+                          className={getDifficultyColour(mistake.difficulty)}
+                          >
+                          {mistake.difficulty}
+                        </Badge>
                       </TableCell>
                       <TableCell>
                         <Badge 
