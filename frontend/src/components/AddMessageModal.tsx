@@ -11,15 +11,11 @@ import axios from 'axios';
 
 interface Submission {
   id: number;
-  problem: {
-    name: string;
-    index: string;
-    rating?: number;
-    tags: string[];
-  };
+  problem_name: string;
+  difficulty: number;
+  tags: string[];
   verdict: string;
   passedTestCount: number;
-  testCount: number;
 }
 
 interface AddMessageModalProps {
@@ -48,18 +44,16 @@ const AddMessageModal = ({ isOpen, onClose, submission, handle }: AddMessageModa
     try {
       const mistakeData = {
         handle,
-        problem_name: submission.problem.name,
-        problem_index: submission.problem.index,
-        difficulty: submission.problem.rating,
-        tags: submission.problem.tags,
+        problem_name: submission.problem_name,
+        difficulty: submission.difficulty,
+        tags: submission.tags,
         verdict: submission.verdict,
         passedtestcount: submission.passedTestCount,
-        totaltestcount: submission.testCount,
         message: message,
         submission_id: submission.id,
         timestamp: new Date().toISOString(),
       };
-      await axios.post(`${API_BASE_URL}/mistakes`, mistakeData);
+      await axios.post(`${API_BASE_URL}/mistakes/mistakes`, mistakeData);
       toast({
         title: "Mistake saved!",
         description: "Your custom message has been saved successfully.",
@@ -87,17 +81,17 @@ const AddMessageModal = ({ isOpen, onClose, submission, handle }: AddMessageModa
         <div className="space-y-4">
           <div className="p-4 bg-secondary rounded-lg space-y-2">
             <div className="font-medium">
-              {submission.problem.index}. {submission.problem.name}
+              {submission.problem_name}
             </div>
             <div className="flex items-center space-x-2">
               <Badge variant="destructive">
                 {submission.verdict.replace(/_/g, ' ')}
               </Badge>
-              {submission.problem.rating && (
-                <Badge variant="outline">{submission.problem.rating}</Badge>
+              {submission.difficulty && (
+                <Badge variant="outline">{submission.difficulty}</Badge>
               )}
               <span className="text-sm text-muted-foreground">
-                {submission.passedTestCount}/{submission.testCount || '?'} tests
+                {submission.passedTestCount}tests
               </span>
             </div>
           </div>

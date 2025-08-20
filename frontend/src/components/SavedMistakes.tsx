@@ -40,7 +40,7 @@ const SavedMistakes = () => {
 
     setIsLoading(true);
     try {
-      const response = await axios.get(`${API_BASE_URL}/mistakes/${handle}`);
+      const response = await axios.get(`${API_BASE_URL}/mistakes/mistakes/${handle}`);
       // Map backend fields to frontend fields if needed
       const data = response.data.map((item: any, idx: number) => ({
         id: item.id || idx,

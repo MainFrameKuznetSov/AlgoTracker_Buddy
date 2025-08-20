@@ -194,7 +194,6 @@ const RatingMistakes = () => {
                     <TableHead>Tags</TableHead>
                     <TableHead>Verdict</TableHead>
                     <TableHead>Tests</TableHead>
-                    {/* <TableHead>Date</TableHead> */}
                   </TableRow>
                 </TableHeader>
                 <TableBody>

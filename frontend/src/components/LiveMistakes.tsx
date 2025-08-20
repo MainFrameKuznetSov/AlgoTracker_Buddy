@@ -7,20 +7,17 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { Activity, Plus, Search } from 'lucide-react';
+import { API_BASE_URL } from '@/lib/api';
 import axios from 'axios';
 import AddMessageModal from './AddMessageModal';
 
 interface Submission {
   id: number;
-  problem: {
-    name: string;
-    index: string;
-    rating?: number;
-    tags: string[];
-  };
+  problem_name: string;
+  difficulty: number;
+  tags: string[];
   verdict: string;
   passedTestCount: number;
-  testCount: number;
 }
 
 const LiveMistakes = () => {
@@ -43,24 +40,22 @@ const LiveMistakes = () => {
 
     setIsLoading(true);
     try {
-      // In a real app, this would call your backend API
-      // For demo, we'll simulate with Codeforces API
-      const response = await axios.get(
-        `https://codeforces.com/api/user.status?handle=${handle}&from=1&count=100`
-      );
-      
-      if (response.data.status === 'OK') {
-        // Filter non-AC submissions
-        const mistakes = response.data.result.filter(
-          (sub: any) => sub.verdict !== 'OK'
-        ).slice(0, 20); // Limit to 20 for demo
-        
-        setSubmissions(mistakes);
-        toast({
-          title: "Success",
-          description: `Found ${mistakes.length} recent mistakes for ${handle}`,
-        });
-      }
+      const response = await axios.get(`${API_BASE_URL}/mistakes/mistakes/live/${handle}`);
+
+      const formatted = response.data.map((item: any, idx: number) => ({
+        id: idx,
+        problem_name: item.problem_name,
+        difficulty: item.difficulty || 800,
+        tags: item.tags || [],
+        verdict: item.verdict,
+        passedTestCount: item.passedTestCount,
+      }));
+
+      setSubmissions(formatted);
+      toast({
+        title: "Success",
+        description: `Found ${response.data.length} recent mistakes for ${handle}`,
+      });
     } catch (error) {
       toast({
         title: "Error",
@@ -80,22 +75,43 @@ const LiveMistakes = () => {
   const getVerdictColor = (verdict: string) => {
     switch (verdict) {
       case 'WRONG_ANSWER':
-        return 'destructive';
+        return 'bg-red-500 text-white dark:bg-red-600';
       case 'TIME_LIMIT_EXCEEDED':
-        return 'destructive';
-      case 'MEMORY_LIMIT_EXCEEDED':
-        return 'destructive';
-      case 'RUNTIME_ERROR':
-        return 'destructive';
+        return 'bg-blue-500 text-white dark:bg-blue-600';
       case 'COMPILATION_ERROR':
-        return 'destructive';
+        return 'bg-yellow-400 text-black dark:bg-yellow-500';
+      case 'IDLENESS_LIMIT_EXCEEDED':
+        return 'bg-gray-500 text-white dark:bg-gray-600';
+      case 'ACCEPTED':
+        return 'bg-green-500 text-white dark:bg-green-600';
       default:
-        return 'secondary';
+        return 'bg-slate-500 text-white dark:bg-slate-600';
     }
+  };
+
+  const getDifficultyColour = (difficulty: number) => {
+    if (difficulty < 1200)
+      return "bg-gray-500 text-white dark:bg-gray-600"; // grey
+    if (difficulty >= 1200 && difficulty < 1400)
+      return "bg-green-500 text-white dark:bg-green-600"; // green
+    if (difficulty >= 1400 && difficulty < 1600)
+      return "bg-cyan-500 text-white dark:bg-cyan-600"; // cyan
+    if (difficulty >= 1600 && difficulty < 1900)
+      return "bg-blue-800 text-white dark:bg-blue-900"; // deep blue
+    if (difficulty >= 1900 && difficulty < 2200)
+      return "bg-fuchsia-500 text-white dark:bg-fuchsia-600"; // magenta
+    if (difficulty >= 2200 && difficulty < 2300)
+      return "bg-yellow-200 text-black dark:bg-yellow-300"; // light yellow
+    if (difficulty >= 2300 && difficulty < 2400)
+      return "bg-yellow-600 text-black dark:bg-yellow-700"; // deep yellow
+    if (difficulty >= 2400)
+      return "bg-red-600 text-white dark:bg-red-700"; // red
+    return "bg-slate-500 text-white dark:bg-slate-600"; // fallback
   };
 
   return (
     <div className="space-y-6">
+      {/* Input Card */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
@@ -129,6 +145,7 @@ const LiveMistakes = () => {
         </CardContent>
       </Card>
 
+      {/* Results Table */}
       {submissions.length > 0 && (
         <Card>
           <CardHeader>
@@ -143,7 +160,7 @@ const LiveMistakes = () => {
                     <TableHead>Difficulty</TableHead>
                     <TableHead>Tags</TableHead>
                     <TableHead>Verdict</TableHead>
-                    <TableHead>Tests</TableHead>
+                    <TableHead>Passed Tests</TableHead>
                     <TableHead>Action</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -151,37 +168,34 @@ const LiveMistakes = () => {
                   {submissions.map((submission) => (
                     <TableRow key={submission.id}>
                       <TableCell className="font-medium">
-                        {submission.problem.index}. {submission.problem.name}
+                        {submission.problem_name}
                       </TableCell>
                       <TableCell>
-                        {submission.problem.rating ? (
-                          <Badge variant="outline">{submission.problem.rating}</Badge>
-                        ) : (
-                          <span className="text-muted-foreground">-</span>
-                        )}
+                        <Badge
+                          variant="secondary"
+                          className={getDifficultyColour(submission.difficulty)}
+                        >
+                          {submission.difficulty}
+                        </Badge>
                       </TableCell>
                       <TableCell>
                         <div className="flex flex-wrap gap-1">
-                          {submission.problem.tags.slice(0, 3).map((tag, index) => (
+                          {submission.tags.map((tag, index) => (
                             <Badge key={index} variant="secondary" className="text-xs">
                               {tag}
                             </Badge>
                           ))}
-                          {submission.problem.tags.length > 3 && (
-                            <Badge variant="secondary" className="text-xs">
-                              +{submission.problem.tags.length - 3}
-                            </Badge>
-                          )}
                         </div>
                       </TableCell>
                       <TableCell>
-                        <Badge variant={getVerdictColor(submission.verdict)}>
+                        <Badge
+                          variant="secondary"
+                          className={getVerdictColor(submission.verdict)}
+                        >
                           {submission.verdict.replace(/_/g, ' ')}
                         </Badge>
                       </TableCell>
-                      <TableCell>
-                        {submission.passedTestCount}/{submission.testCount || '?'}
-                      </TableCell>
+                      <TableCell>{submission.passedTestCount}</TableCell>
                       <TableCell>
                         <Button
                           size="sm"
@@ -201,6 +215,7 @@ const LiveMistakes = () => {
         </Card>
       )}
 
+      {/* Add Note Modal */}
       {showAddMessage && selectedSubmission && (
         <AddMessageModal
           isOpen={showAddMessage}
