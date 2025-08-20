@@ -18,7 +18,6 @@ interface RatingMistake {
   verdict: string;
   tags: string[];
   passedTestCount: number;
-  timestamp: string;
 }
 
 const RatingMistakes = () => {
@@ -72,11 +71,10 @@ const RatingMistakes = () => {
       id: item.id || idx,
       problemName: item.problem_name,
       problemIndex: item.problem_index || '-',
-      difficulty: item.difficulty,
+      difficulty: item.difficulty || 'null',
       verdict: item.verdict,
       tags: item.tags || [],
       passedTestCount: item.passedTestCount,
-      timestamp: item.timestamp || new Date().toISOString(),
     }));
 
     setMistakes(data);
