@@ -40,7 +40,7 @@
 | `problem_name`  | STRING  | Problem name                                |
 | `difficulty`    | STRING  | Difficulty rating                           |
 | `tags`          | STRING  | Problem tags                                |
-| `verdict`       | STRING  | Submission verdict (WA/TLE/RE/…)           |
+| `verdict`       | STRING  | Submission verdict (WA/TLE/RTE/CE/ILE)      |
 | `passedTestCount` | INT   | Number of passed test cases                 |
 | `message`       | TEXT    | Optional message or error details           |
 
