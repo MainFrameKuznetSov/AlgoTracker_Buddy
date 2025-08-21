@@ -11,7 +11,6 @@ import { useToast } from '@/hooks/use-toast';
 import { BarChart3, Search } from 'lucide-react';
 
 interface RatingMistake {
-  id: number;
   problemName: string;
   problemIndex: string;
   difficulty: number;
@@ -68,10 +67,8 @@ const RatingMistakes = () => {
     );
 
     const data = response.data.map((item: any, idx: number) => ({
-      id: item.id || idx,
       problemName: item.problem_name,
-      problemIndex: item.problem_index || '-',
-      difficulty: item.difficulty || 'null',
+      difficulty: item.difficulty || '800',
       verdict: item.verdict,
       tags: item.tags || [],
       passedTestCount: item.passedTestCount,
@@ -113,15 +110,24 @@ const RatingMistakes = () => {
 };
 
 
-  const getDifficultyColor = (rating: number) => {
-    if (rating < 1000) return 'bg-gray-500';
-    if (rating < 1200) return 'bg-green-500';
-    if (rating < 1400) return 'bg-cyan-500';
-    if (rating < 1600) return 'bg-blue-500';
-    if (rating < 1900) return 'bg-purple-500';
-    if (rating < 2100) return 'bg-yellow-500';
-    if (rating < 2400) return 'bg-orange-500';
-    return 'bg-red-500';
+  const getDifficultyColour = (difficulty: number) => {
+    if (difficulty < 1200)
+      return "bg-gray-500 text-white dark:bg-gray-600"; // grey
+    if (difficulty >= 1200 && difficulty < 1400)
+      return "bg-green-500 text-white dark:bg-green-600"; // green
+    if (difficulty >= 1400 && difficulty < 1600)
+      return "bg-cyan-500 text-white dark:bg-cyan-600"; // cyan
+    if (difficulty >= 1600 && difficulty < 1900)
+      return "bg-blue-800 text-white dark:bg-blue-900"; // deep blue
+    if (difficulty >= 1900 && difficulty < 2200)
+      return "bg-fuchsia-500 text-white dark:bg-fuchsia-600"; // magenta
+    if (difficulty >= 2200 && difficulty < 2300)
+      return "bg-yellow-200 text-black dark:bg-yellow-300"; // light yellow
+    if (difficulty >= 2300 && difficulty < 2400)
+      return "bg-yellow-600 text-black dark:bg-yellow-700"; // deep yellow
+    if (difficulty >= 2400)
+      return "bg-red-600 text-white dark:bg-red-700"; // red
+    return "bg-slate-500 text-white dark:bg-slate-600"; // fallback
   };
 
   return (
@@ -193,23 +199,22 @@ const RatingMistakes = () => {
                     <TableHead>Difficulty</TableHead>
                     <TableHead>Tags</TableHead>
                     <TableHead>Verdict</TableHead>
-                    <TableHead>Tests</TableHead>
+                    <TableHead>Passed Tests</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {mistakes.map((mistake) => (
-                    <TableRow key={mistake.id}>
+                    <TableRow>
                       <TableCell className="font-medium">
                         {mistake.problemName}
                       </TableCell>
                       <TableCell>
-                        <div className="flex items-center space-x-2">
-                          <div
-                            className={`w-3 h-3 rounded-full ${getDifficultyColor(mistake.difficulty)}`}
-                            title={`Difficulty: ${mistake.difficulty}`}
-                          />
-                          <Badge variant="outline">{mistake.difficulty}</Badge>
-                        </div>
+                        <Badge
+                          variant="secondary"
+                          className={getDifficultyColour(mistake.difficulty)}
+                          >
+                          {mistake.difficulty}
+                        </Badge>
                       </TableCell>
                       <TableCell>
                         <div className="flex flex-wrap gap-1">
