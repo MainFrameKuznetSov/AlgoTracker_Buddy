@@ -39,7 +39,7 @@ def get_mistakes(handle: str):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@router.post("/mistakes", response_model=MistakeResponse)
+@router.post("/mistakes")
 def post_mistake(mistake: MistakeCreate, db: Session = Depends(get_db)):
     try:
         # Check if the mistake already exists (based on unique fields)
@@ -58,7 +58,7 @@ def post_mistake(mistake: MistakeCreate, db: Session = Depends(get_db)):
             existing.message = mistake.message
             db.commit()
             db.refresh(existing)
-            return existing
+            return {"message" : "Success"}
         else:
             # Insert a new mistake if it doesn't exist
             db_mistake = Mistake(
@@ -73,7 +73,7 @@ def post_mistake(mistake: MistakeCreate, db: Session = Depends(get_db)):
             db.add(db_mistake)
             db.commit()
             db.refresh(db_mistake)
-            return db_mistake
+            return {"message" : "Success"}
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -150,7 +150,7 @@ def get_mistakes_in_range(handle: str, A: int, B: int):
     but only return those within difficulty range [A, B].
     """
     try:
-        data = fetch_last_submissions(handle, count=100)
+        data = fetch_last_submissions(handle, count=500)
         submissions = data["result"]
 
         mistakes = []
