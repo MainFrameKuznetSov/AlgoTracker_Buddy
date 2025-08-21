@@ -11,14 +11,12 @@ import { useToast } from '@/hooks/use-toast';
 import { Filter, Search } from 'lucide-react';
 
 interface MistakeByVerdict {
-  id: number;
   handle: string;
   problemName: string;
-  problemIndex: string;
-  difficulty?: number;
+  difficulty: number;
   verdict: string;
   customMessage: string;
-  timestamp: string;
+  passedTestCount: number;
 }
 
 const verdictOptions = [
@@ -27,6 +25,7 @@ const verdictOptions = [
   { value: 'MEMORY_LIMIT_EXCEEDED', label: 'Memory Limit Exceeded' },
   { value: 'RUNTIME_ERROR', label: 'Runtime Error' },
   { value: 'COMPILATION_ERROR', label: 'Compilation Error' },
+  { value: 'IDLENESS_LIMIT_EXCEEDED', label: 'Idleness Limit Exceeded'},
 ];
 
 const MistakesByVerdict = () => {
@@ -47,16 +46,14 @@ const MistakesByVerdict = () => {
 
     setIsLoading(true);
     try {
-      const response = await axios.get(`${API_BASE_URL}/mistakes/verdict/${selectedVerdict}`);
+      const response = await axios.get(`${API_BASE_URL}/mistakes/mistakes/verdict/${selectedVerdict}`);
       const data = response.data.map((item: any, idx: number) => ({
-        id: item.id || idx,
         handle: item.handle,
         problemName: item.problem_name,
-        problemIndex: item.problem_index || '-',
-        difficulty: item.difficulty,
+        difficulty: item.difficulty || 800,
         verdict: item.verdict,
         customMessage: item.message,
-        timestamp: item.timestamp || new Date().toISOString(),
+        passedTestCount: item.passedtestcount,
       }));
       setMistakes(data);
       toast({
@@ -75,20 +72,40 @@ const MistakesByVerdict = () => {
   };
 
   const getVerdictColor = (verdict: string) => {
-    switch (verdict) {
-      case 'WRONG_ANSWER':
-        return 'destructive';
-      case 'TIME_LIMIT_EXCEEDED':
-        return 'destructive';
-      case 'MEMORY_LIMIT_EXCEEDED':
-        return 'destructive';
-      case 'RUNTIME_ERROR':
-        return 'destructive';
-      case 'COMPILATION_ERROR':
-        return 'destructive';
-      default:
-        return 'secondary';
-    }
+  switch (verdict) {
+    case 'WRONG_ANSWER':
+      return 'bg-red-500 text-white dark:bg-red-600';
+    case 'TIME_LIMIT_EXCEEDED':
+      return 'bg-blue-500 text-white dark:bg-blue-600';
+    case 'COMPILATION_ERROR':
+      return 'bg-yellow-400 text-black dark:bg-yellow-500';
+    case 'IDLENESS_LIMIT_EXCEEDED':
+      return 'bg-gray-500 text-white dark:bg-gray-600';
+    case 'ACCEPTED':
+      return 'bg-green-500 text-white dark:bg-green-600';
+    default:
+      return 'bg-slate-500 text-white dark:bg-slate-600';
+  }
+};
+
+  const getDifficultyColour = (difficulty: number) => {
+    if (difficulty < 1200)
+      return "bg-gray-500 text-white dark:bg-gray-600"; // grey
+    if (difficulty >= 1200 && difficulty < 1400)
+      return "bg-green-500 text-white dark:bg-green-600"; // green
+    if (difficulty >= 1400 && difficulty < 1600)
+      return "bg-cyan-500 text-white dark:bg-cyan-600"; // cyan
+    if (difficulty >= 1600 && difficulty < 1900)
+      return "bg-blue-800 text-white dark:bg-blue-900"; // deep blue
+    if (difficulty >= 1900 && difficulty < 2200)
+      return "bg-fuchsia-500 text-white dark:bg-fuchsia-600"; // magenta
+    if (difficulty >= 2200 && difficulty < 2300)
+      return "bg-yellow-200 text-black dark:bg-yellow-300"; // light yellow
+    if (difficulty >= 2300 && difficulty < 2400)
+      return "bg-yellow-600 text-black dark:bg-yellow-700"; // deep yellow
+    if (difficulty >= 2400)
+      return "bg-red-600 text-white dark:bg-red-700"; // red
+    return "bg-slate-500 text-white dark:bg-slate-600"; // fallback
   };
 
   return (
@@ -103,7 +120,7 @@ const MistakesByVerdict = () => {
         <CardContent>
           <div className="flex space-x-4">
             <div className="flex-1">
-              <Label htmlFor="verdict">Verdict Type</Label>
+              <Label htmlFor="verdict">Verdict</Label>
               <Select value={selectedVerdict} onValueChange={setSelectedVerdict}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select a verdict to filter by" />
@@ -146,29 +163,36 @@ const MistakesByVerdict = () => {
                     <TableHead>Handle</TableHead>
                     <TableHead>Problem</TableHead>
                     <TableHead>Difficulty</TableHead>
+                    <TableHead>Passed Tests</TableHead>
                     <TableHead>Verdict</TableHead>
                     <TableHead>Notes</TableHead>
-                    <TableHead>Date</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {mistakes.map((mistake) => (
-                    <TableRow key={mistake.id}>
+                    <TableRow>
                       <TableCell className="font-medium">
                         {mistake.handle}
                       </TableCell>
                       <TableCell>
-                        {mistake.problemIndex}. {mistake.problemName}
+                        {mistake.problemName}
                       </TableCell>
                       <TableCell>
-                        {mistake.difficulty ? (
-                          <Badge variant="outline">{mistake.difficulty}</Badge>
-                        ) : (
-                          <span className="text-muted-foreground">-</span>
-                        )}
+                        <Badge
+                          variant="secondary"
+                          className={getDifficultyColour(mistake.difficulty)}
+                          >
+                          {mistake.difficulty}
+                        </Badge>
                       </TableCell>
                       <TableCell>
-                        <Badge variant={getVerdictColor(mistake.verdict)}>
+                        {mistake.passedTestCount}
+                      </TableCell>
+                      <TableCell>
+                        <Badge 
+                          variant="secondary"
+                          className={getVerdictColor(mistake.verdict)}
+                          >
                           {mistake.verdict.replace(/_/g, ' ')}
                         </Badge>
                       </TableCell>
@@ -176,11 +200,6 @@ const MistakesByVerdict = () => {
                         <div className="text-sm text-muted-foreground truncate" title={mistake.customMessage}>
                           {mistake.customMessage}
                         </div>
-                      </TableCell>
-                      <TableCell>
-                        <span className="text-sm text-muted-foreground">
-                          {new Date(mistake.timestamp).toLocaleDateString()}
-                        </span>
                       </TableCell>
                     </TableRow>
                   ))}

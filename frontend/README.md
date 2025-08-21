@@ -1,7 +1,3 @@
-**Files requiring major changes**
-- MistakesByProblem.tsx
-- MistakesByVerdict.tsx
-
 **Files requiring minor logical changes**
 - AddMessageModal.tsx
 
@@ -10,3 +6,5 @@
 - FilteredMistakes.tsx
 - LiveMistakes.tsx
 - RatingMistakes.tsx
+- MistakesByProblem.tsx
+- MistakesByVerdict.tsx
