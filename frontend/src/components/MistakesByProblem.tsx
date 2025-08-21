@@ -11,16 +11,13 @@ import { useToast } from '@/hooks/use-toast';
 import { BarChart3, Search } from 'lucide-react';
 
 interface MistakeByProblem {
-  id: number;
   handle: string;
   problemName: string;
   problemIndex: string;
-  difficulty?: number;
+  difficulty: number;
   verdict: string;
   customMessage: string;
-  timestamp: string;
   passedTestCount: number;
-  totalTestCount?: number;
 }
 
 const MistakesByProblem = () => {
@@ -41,18 +38,14 @@ const MistakesByProblem = () => {
 
     setIsLoading(true);
     try {
-      const response = await axios.get(`${API_BASE_URL}/mistakes/problem/${encodeURIComponent(problemName)}`);
+      const response = await axios.get(`${API_BASE_URL}/mistakes/mistakes/problem/${encodeURIComponent(problemName)}`);
       const data = response.data.map((item: any, idx: number) => ({
-        id: item.id || idx,
         handle: item.handle,
         problemName: item.problem_name,
-        problemIndex: item.problem_index || '-',
         difficulty: item.difficulty,
         verdict: item.verdict,
         customMessage: item.message,
-        timestamp: item.timestamp || new Date().toISOString(),
         passedTestCount: item.passedtestcount,
-        totalTestCount: item.totaltestcount,
       }));
       setMistakes(data);
       toast({
@@ -71,20 +64,40 @@ const MistakesByProblem = () => {
   };
 
   const getVerdictColor = (verdict: string) => {
-    switch (verdict) {
-      case 'WRONG_ANSWER':
-        return 'destructive';
-      case 'TIME_LIMIT_EXCEEDED':
-        return 'destructive';
-      case 'MEMORY_LIMIT_EXCEEDED':
-        return 'destructive';
-      case 'RUNTIME_ERROR':
-        return 'destructive';
-      case 'COMPILATION_ERROR':
-        return 'destructive';
-      default:
-        return 'secondary';
-    }
+  switch (verdict) {
+    case 'WRONG_ANSWER':
+      return 'bg-red-500 text-white dark:bg-red-600';
+    case 'TIME_LIMIT_EXCEEDED':
+      return 'bg-blue-500 text-white dark:bg-blue-600';
+    case 'COMPILATION_ERROR':
+      return 'bg-yellow-400 text-black dark:bg-yellow-500';
+    case 'IDLENESS_LIMIT_EXCEEDED':
+      return 'bg-gray-500 text-white dark:bg-gray-600';
+    case 'ACCEPTED':
+      return 'bg-green-500 text-white dark:bg-green-600';
+    default:
+      return 'bg-slate-500 text-white dark:bg-slate-600';
+  }
+};
+
+  const getDifficultyColour = (difficulty: number) => {
+    if (difficulty < 1200)
+      return "bg-gray-500 text-white dark:bg-gray-600"; // grey
+    if (difficulty >= 1200 && difficulty < 1400)
+      return "bg-green-500 text-white dark:bg-green-600"; // green
+    if (difficulty >= 1400 && difficulty < 1600)
+      return "bg-cyan-500 text-white dark:bg-cyan-600"; // cyan
+    if (difficulty >= 1600 && difficulty < 1900)
+      return "bg-blue-800 text-white dark:bg-blue-900"; // deep blue
+    if (difficulty >= 1900 && difficulty < 2200)
+      return "bg-fuchsia-500 text-white dark:bg-fuchsia-600"; // magenta
+    if (difficulty >= 2200 && difficulty < 2300)
+      return "bg-yellow-200 text-black dark:bg-yellow-300"; // light yellow
+    if (difficulty >= 2300 && difficulty < 2400)
+      return "bg-yellow-600 text-black dark:bg-yellow-700"; // deep yellow
+    if (difficulty >= 2400)
+      return "bg-red-600 text-white dark:bg-red-700"; // red
+    return "bg-slate-500 text-white dark:bg-slate-600"; // fallback
   };
 
   return (
@@ -138,44 +151,42 @@ const MistakesByProblem = () => {
                     <TableHead>Problem</TableHead>
                     <TableHead>Difficulty</TableHead>
                     <TableHead>Verdict</TableHead>
-                    <TableHead>Tests</TableHead>
+                    <TableHead>Passed Tests</TableHead>
                     <TableHead>Notes</TableHead>
-                    <TableHead>Date</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {mistakes.map((mistake) => (
-                    <TableRow key={mistake.id}>
+                    <TableRow>
                       <TableCell className="font-medium">
                         {mistake.handle}
                       </TableCell>
                       <TableCell>
-                        {mistake.problemIndex}. {mistake.problemName}
+                        {mistake.problemName}
                       </TableCell>
                       <TableCell>
-                        {mistake.difficulty ? (
-                          <Badge variant="outline">{mistake.difficulty}</Badge>
-                        ) : (
-                          <span className="text-muted-foreground">-</span>
-                        )}
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant={getVerdictColor(mistake.verdict)}>
-                          {mistake.verdict.replace(/_/g, ' ')}
+                        <Badge
+                          variant="secondary"
+                          className={getDifficultyColour(mistake.difficulty)}
+                        >
+                        {mistake.difficulty}
                         </Badge>
                       </TableCell>
                       <TableCell>
-                        {mistake.passedTestCount}/{mistake.totalTestCount || '?'}
+                        <Badge
+                          variant="secondary"
+                          className={getVerdictColor(mistake.verdict)}
+                          >
+                          {mistake.verdict}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        {mistake.passedTestCount}
                       </TableCell>
                       <TableCell className="max-w-xs">
                         <div className="text-sm text-muted-foreground truncate" title={mistake.customMessage}>
                           {mistake.customMessage}
                         </div>
-                      </TableCell>
-                      <TableCell>
-                        <span className="text-sm text-muted-foreground">
-                          {new Date(mistake.timestamp).toLocaleDateString()}
-                        </span>
                       </TableCell>
                     </TableRow>
                   ))}
