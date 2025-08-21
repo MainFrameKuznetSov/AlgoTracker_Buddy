@@ -17,7 +17,7 @@ router = APIRouter()
 def get_mistakes(handle: str):
     
     try:
-        data = fetch_last_submissions(handle, count=100)
+        data = fetch_last_submissions(handle, count=500)
         submissions = data["result"]
 
         mistakes = []
