@@ -103,6 +103,7 @@ class VerdictEnum(str, Enum):
     COMPILATION_ERROR = "COMPILATION_ERROR"
     RUNTIME_ERROR= "RUNTIME_ERROR"
     MEMORY_LIMIT_EXCEEDED = "MEMORY_LIMIT_EXCEEDED"
+    CHALLANGED = "CHALLENGED"
 
 
 @router.get("/mistakes/verdict/{verdict}", response_model=list[MistakeBase])
