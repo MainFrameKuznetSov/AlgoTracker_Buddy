@@ -43,7 +43,6 @@ const LiveMistakes = () => {
       const response = await axios.get(`${API_BASE_URL}/mistakes/mistakes/live/${handle}`);
 
       const formatted = response.data.map((item: any, idx: number) => ({
-        id: idx,
         problem_name: item.problem_name,
         difficulty: item.difficulty || 800,
         tags: item.tags || [],
