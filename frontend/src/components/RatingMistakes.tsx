@@ -68,7 +68,7 @@ const RatingMistakes = () => {
 
     const data = response.data.map((item: any, idx: number) => ({
       problemName: item.problem_name,
-      difficulty: item.difficulty || '800',
+      difficulty: item.difficulty || 800,
       verdict: item.verdict,
       tags: item.tags || [],
       passedTestCount: item.passedTestCount,
