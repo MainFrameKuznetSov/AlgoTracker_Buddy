@@ -10,7 +10,6 @@ import { Save } from 'lucide-react';
 import axios from 'axios';
 
 interface Submission {
-  id: number;
   problem_name: string;
   difficulty: number;
   tags: string[];
@@ -50,8 +49,6 @@ const AddMessageModal = ({ isOpen, onClose, submission, handle }: AddMessageModa
         verdict: submission.verdict,
         passedtestcount: submission.passedTestCount,
         message: message,
-        submission_id: submission.id,
-        timestamp: new Date().toISOString(),
       };
       await axios.post(`${API_BASE_URL}/mistakes/mistakes`, mistakeData);
       toast({

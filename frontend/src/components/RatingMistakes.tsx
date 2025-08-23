@@ -8,11 +8,11 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
-import { BarChart3, Search } from 'lucide-react';
+import { BarChart3, Plus,Search } from 'lucide-react';
+import AddMessageModal from './AddMessageModal';
 
 interface RatingMistake {
-  problemName: string;
-  problemIndex: string;
+  problem_name: string;
   difficulty: number;
   verdict: string;
   tags: string[];
@@ -25,6 +25,8 @@ const RatingMistakes = () => {
   const [maxRating, setMaxRating] = useState('');
   const [mistakes, setMistakes] = useState<RatingMistake[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedSubmission, setSelectedSubmission] = useState<RatingMistake | null>(null);
+  const [showAddMessage, setShowAddMessage] = useState(false);
   const { toast } = useToast();
 
   const fetchRatingMistakes = async () => {
@@ -67,7 +69,7 @@ const RatingMistakes = () => {
     );
 
     const data = response.data.map((item: any, idx: number) => ({
-      problemName: item.problem_name,
+      problem_name: item.problem_name,
       difficulty: item.difficulty || 800,
       verdict: item.verdict,
       tags: item.tags || [],
@@ -75,7 +77,6 @@ const RatingMistakes = () => {
     }));
 
     setMistakes(data);
-
     toast({
       title: "Success",
       description: `Found ${data.length} mistakes in rating range ${min}-${max} for ${handle}`,
@@ -91,6 +92,11 @@ const RatingMistakes = () => {
   }
 };
 
+
+    const handleAddMessage = (submission: RatingMistake) => {
+        setSelectedSubmission(submission);
+        setShowAddMessage(true);
+      };
 
   const getVerdictColor = (verdict: string) => {
   switch (verdict) {
@@ -200,13 +206,14 @@ const RatingMistakes = () => {
                     <TableHead>Tags</TableHead>
                     <TableHead>Verdict</TableHead>
                     <TableHead>Passed Tests</TableHead>
+                    <TableHead>Action</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {mistakes.map((mistake) => (
                     <TableRow>
                       <TableCell className="font-medium">
-                        {mistake.problemName}
+                        {mistake.problem_name}
                       </TableCell>
                       <TableCell>
                         <Badge
@@ -236,11 +243,16 @@ const RatingMistakes = () => {
                       <TableCell>
                         {mistake.passedTestCount}
                       </TableCell>
-                      {/* <TableCell>
-                        <span className="text-sm text-muted-foreground">
-                          {new Date(mistake.timestamp).toLocaleDateString()}
-                        </span>
-                      </TableCell> */}
+                      <TableCell>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => handleAddMessage(mistake)}
+                        >
+                          <Plus className="h-4 w-4 mr-1" />
+                          Add Note
+                        </Button>
+                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -248,6 +260,18 @@ const RatingMistakes = () => {
             </div>
           </CardContent>
         </Card>
+      )}
+      {/* Add Note Modal */}
+      {showAddMessage && selectedSubmission && (
+        <AddMessageModal
+          isOpen={showAddMessage}
+          onClose={() => {
+            setShowAddMessage(false);
+            setSelectedSubmission(null);
+          }}
+          submission={selectedSubmission}
+          handle={handle}
+        />
       )}
     </div>
   );

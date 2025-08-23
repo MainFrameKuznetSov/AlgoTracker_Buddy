@@ -12,7 +12,7 @@ import axios from 'axios';
 import AddMessageModal from './AddMessageModal';
 
 interface Submission {
-  id: number;
+  id: number; 
   problem_name: string;
   difficulty: number;
   tags: string[];
