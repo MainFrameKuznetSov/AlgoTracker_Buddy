@@ -91,7 +91,7 @@ const AddMessageModal = ({ isOpen, onClose, submission, handle }: AddMessageModa
                 <Badge variant="outline">{submission.difficulty}</Badge>
               )}
               <span className="text-sm text-muted-foreground">
-                {submission.passedTestCount}tests
+                {submission.passedTestCount} tests passed.
               </span>
             </div>
           </div>
@@ -118,7 +118,7 @@ const AddMessageModal = ({ isOpen, onClose, submission, handle }: AddMessageModa
             ) : (
               <Save className="h-4 w-4 mr-2" />
             )}
-            Save Mistake
+            Save
           </Button>
         </DialogFooter>
       </DialogContent>
