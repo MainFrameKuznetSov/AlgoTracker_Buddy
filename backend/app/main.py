@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from app.api import submissions, mistakes
+from app.api import submissions, mistakes, contests
 from app.core.db import Base, engine
 from sqlalchemy.exc import OperationalError
 from fastapi.middleware.cors import CORSMiddleware
@@ -39,7 +39,7 @@ def on_shutdown():
 # Routers
 app.include_router(submissions.router, prefix="/submissions", tags=["Submissions"])
 app.include_router(mistakes.router, prefix="/mistakes", tags=["Mistakes"])
-# app.include_router(mistakes.router, prefix="/mistakes", tags=["Mistakes"])
+app.include_router(contests.app, prefix="/contests", tags=["Contests"])
 
 # Root endpoint
 @app.get("/")
