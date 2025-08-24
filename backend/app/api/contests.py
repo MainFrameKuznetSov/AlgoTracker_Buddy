@@ -53,3 +53,4 @@ def getContestSubmissions(handle: str,contestNumber: int):
     # return contestData
     return {"message":"success"}
 
+# More operations to be added
