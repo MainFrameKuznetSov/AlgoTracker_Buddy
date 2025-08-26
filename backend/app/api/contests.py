@@ -2,7 +2,7 @@ from enum import Enum
 from fastapi import APIRouter, HTTPException
 from app.services.codeforces import fetch_last_submissions
 
-app= APIRouter()
+app = APIRouter()
 
 @app.get("/contests/{handle}")
 def getContestSubmissions(handle: str,contestNumber: int):
@@ -16,13 +16,13 @@ def getContestSubmissions(handle: str,contestNumber: int):
         contestData=[]
         for fact in factors:
             if fact.get("contestId")==contestNumber:
-                problem=fact.get("problem")
+                problem = fact.get("problem")
                 contestData.append({
-                    "problem_name": problem.get("name"),
-                    "difficulty": problem.get("rating"),
-                    "tags": problem.get("tags", []),
-                    "verdict": fact.get("verdict"),
-                    "passedTestCount": fact.get("passedTestCount"),
+                    "problem_name":problem.get("name"),
+                    "difficulty":problem.get("rating"),
+                    "tags":problem.get("tags", []),
+                    "verdict":fact.get("verdict"),
+                    "passedTestCount":fact.get("passedTestCount"),
                     "message": "Blank",
                     "handle":handle
                 })
