@@ -8,8 +8,9 @@ import MistakesByVerdict from '@/components/MistakesByVerdict';
 import MistakesByProblem from '@/components/MistakesByProblem';
 import FilteredMistakes from '@/components/FilteredMistakes';
 import RatingMistakes from '@/components/RatingMistakes';
+import ContestSubmissions from '@/components/ContestSubmissions';
 
-type ActiveView = 'live' | 'saved' | 'verdict' | 'problem' | 'filtered' | 'rating';
+type ActiveView = 'live' | 'saved' | 'verdict' | 'problem' | 'filtered' | 'rating' | 'contests';
 
 const Dashboard = () => {
   const { user, logout } = useAuth();
@@ -22,6 +23,7 @@ const Dashboard = () => {
     { id: 'problem' as ActiveView, label: 'By Problem', icon: BarChart3, description: 'Search by problem name' },
     { id: 'filtered' as ActiveView, label: 'Advanced Filter', icon: Filter, description: 'Handle + verdict/problem filters' },
     { id: 'rating' as ActiveView, label: 'Rating Range', icon: BarChart3, description: 'Filter by difficulty range' },
+    { id: 'contests' as ActiveView, label: 'Contest Submissions', icon:BarChart3, description: 'Filter by contest submissions'}
   ];
 
   const renderContent = () => {
@@ -38,6 +40,8 @@ const Dashboard = () => {
         return <FilteredMistakes />;
       case 'rating':
         return <RatingMistakes />;
+      case 'contests':
+        return <ContestSubmissions />
       default:
         return <LiveMistakes />;
     }
