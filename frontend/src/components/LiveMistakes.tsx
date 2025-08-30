@@ -137,7 +137,7 @@ const LiveMistakes = () => {
                 ) : (
                   <Search className="h-4 w-4 mr-2" />
                 )}
-                Fetch Mistakes
+                Fetch Live Mistakes
               </Button>
             </div>
           </div>
